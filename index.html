@@ -1,0 +1,101 @@
+
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+  <!-- Blockly core -->
+	<script src="../blockly/blockly_compressed.js"></script>
+	<script src="../blockly/blocks_compressed.js"></script>
+	<script src="../blockly/msg/js/en.js"></script>
+
+  <!-- Our generators (todo move server side) -->
+  <script type="text/javascript" src="generators/drools.js"></script>
+  <script type="text/javascript" src="generators/drools/lists.js"></script>
+  <script type="text/javascript" src="generators/drools/logic.js"></script>
+  <script type="text/javascript" src="generators/drools/loops.js"></script>
+  <script type="text/javascript" src="generators/drools/math.js"></script>
+  <script type="text/javascript" src="generators/drools/procedures.js"></script>
+  <script type="text/javascript" src="generators/drools/text.js"></script>
+  <script type="text/javascript" src="generators/drools/variables.js"></script>
+    
+  <!-- Our extensions and blocks -->
+  <script type="text/javascript" src="wt-extensions/whenthen-extensions.js"></script>
+  <script type="text/javascript" src="wt-blocks/api-definer.js"></script>
+  <script type="text/javascript" src="wt-blocks/nested.js"></script>
+  <script type="text/javascript" src="wt-blocks/test.js"></script>
+  <script type="text/javascript" src="wt-blocks/testgen.js"></script>
+  <script type="text/javascript" src="wt-blocks/dynamoscaling.js"></script>
+
+	<script src="js/blockly-app.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/blockly-app.css" />
+  <link rel='stylesheet' type='text/css' href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' />
+  <link rel='stylesheet' type='text/css' href='http://fonts.googleapis.com/css?family=Lato' />
+  <link rel='stylesheet' type='text/css' href='http://fonts.googleapis.com/css?family=Montserrat' >
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" type="text/css" href="css/top-menu-bar.css" />
+	<title>Stackbot</title>
+</head>
+<body>
+
+<nav id="nav">
+  <ul>
+    <li><a href="#"><i class="fa fa-save fa-2x"></i><Br/>Save</a></li>
+    <li><a href="#"><i class="fa fa-question-circle fa-2x"></i><Br/>Help</a></li>
+    <li><a href="#"><i class="fa fa-trash fa-2x"></i><Br/>Clear</a></li>
+    </ul>
+</nav>
+
+
+<div id="mainSection">
+	<div id="blocklyDiv"></div>
+</div>
+
+
+<xml id="toolbox" style="display: none">
+  <category name="Start">
+    <block type="ds_whenthen"></block>
+    <block type="ds_rule"></block>
+  </category>
+  <category name="CloudWatch">
+    <block type="controls_if"></block>
+    <block type="controls_whileUntil"></block>
+  </category>
+  <category name="DynamoDB">
+    <block type="ds_consumed_reads"></block>
+    <block type="ds_consumed_writes"></block>
+    <block type="ds_provisioned_reads_level"></block>
+    <block type="ds_provisioned_writes_level"></block>
+    <block type="ds_consumed_reads_level"></block>
+    <block type="ds_consumed_writes_level"></block>
+    <block type="ds_set_provisioned_reads"></block>
+    <block type="ds_set_provisioned_writes"></block>
+    <block type="ds_set_provisioned_reads_and_writes"></block>
+  </category>
+  <category name="Route 53">
+    <block type="logic_compare"></block>
+    <block type="logic_operation"></block>
+    <block type="logic_boolean"></block>
+  </category>
+  <category name="Notifications">
+    <block type="slack_message"></block>
+    <block type="hipchat_message"></block>
+    <block type="campfire_message"></block>
+    <block type="campfire_sound_message"></block>
+    <block type="sqwiggle_message"></block>
+    <block type="flowdock_message"></block>
+    <block type="hall_message"></block>
+    <block type="twilio_sms"></block>
+  </category>
+</xml>
+
+<script>
+  Blockly.inject(document.getElementById('blocklyDiv'),
+      {toolbox: document.getElementById('toolbox'),
+       trashcan: false,
+       scrollbars: false});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,170 @@
+#mainSection {
+	height: auto;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	margin-top: 88px;
+	z-index: 99;
+}
+
+/* Background of canvas */
+.blocklySvg {
+  background-color: #FDFDFD !important;
+}
+
+#blocklyDiv {
+	background-color: none;
+	height: 100%;
+}
+
+.blocklyToolboxDiv {
+  background-color: #D3D3D3 !important;
+}
+
+.blocklyTreeRoot {
+  padding-top: 1px !important;
+}
+
+.blocklyTreeLabel {
+	font-family: 'Open Sans', sans-serif !important;
+    font-weight: 700 !important; 
+    font-size: 20px !important;
+}
+
+/* Forces things out-of-whack at the moment
+.blocklyText {
+	font-family: 'Open Sans', sans-serif !important;
+    font-weight: 400 !important; 
+}
+*/
+
+.blocklyTreeRow {
+  padding-top: 24px;
+  padding-bottom: 24px;
+  padding-right: 46px !important;
+  display:block;
+  border-bottom:0px;
+  border-top:0px;
+  margin-bottom:1px;
+  margin-right:1px;
+  background-color: #ffffff;
+}
+
+.blocklyTreeRow:hover {
+  color: #ffffff!important;
+}
+
+
+/*
+ 1 = STart
+ 2 = CloudWatch verydark=#4A6032 dark=#4A6423 mid=#759C3F light=#A2C477
+ 3 = DynamoDB  verydark=#1B476E dark=#205A99 mid=#2D71B8 light=#5294CE
+ 4 = Route 53 verydark=#6A4326 dark=#9D5026, mid=#F48536
+ 5 = Notifications
+ */
+
+[id=":1"] > .blocklyTreeRow {
+  border-left: 4px solid #D30E53;
+  color: #D30E53;
+}
+
+[id=":1"] > .blocklyTreeRow:hover {
+  background-color: #D30E53;
+}
+
+[id=":1"] > .blocklyTreeSelected {
+  background-color: #D30E53 !important;
+}
+
+
+[id=":2"] > .blocklyTreeRow {
+  border-left: 4px solid #4A6423;
+  color: #4A6423;
+}
+
+[id=":2"] > .blocklyTreeRow:hover {
+  background-color: #4A6423;
+}
+
+[id=":2"] > .blocklyTreeSelected {
+  background-color: #759C3F !important;
+}
+
+[id=":3"] > .blocklyTreeRow {
+  border-left: 4px solid #1B476E;
+  color: #1B476E;
+}
+
+[id=":3"] > .blocklyTreeRow:hover {
+  background-color: #1B476E;
+}
+
+[id=":3"] > .blocklyTreeSelected {
+  background-color: #205A99 !important;
+}
+
+[id=":4"] > .blocklyTreeRow {
+  border-left: 4px solid #9D5026;
+  color: #9D5026;
+}
+
+[id=":4"] > .blocklyTreeRow:hover {
+  background-color: #9D5026;
+}
+
+[id=":4"] > .blocklyTreeSelected {
+  background-color: #F48536 !important;
+}
+
+[id=":5"] > .blocklyTreeRow {
+  border-left: 4px solid #5C2D51;
+  color: #5C2D51;
+}
+
+[id=":5"] > .blocklyTreeRow:hover {
+  background-color: #5C2D51;
+}
+
+[id=":5"] > .blocklyTreeSelected {
+  background-color: #5C2D51 !important;
+}
+
+
+/* Block styling */
+/* Block text font */
+.blocklyText, .blocklyMenuText, .blocklyHtmlInput, .blocklyIconMark, .blocklyTooltipText {
+  font-family: 'Open Sans', sans-serif !important;
+  font-weight: 700 !important; 
+}
+
+/* Remove block bevel - i.e. flat look' */
+.blocklyPathLight {
+  display: none !important;
+}
+
+.blocklyPathDark {
+  display: none !important;
+}
+
+
+
+
+/* from code.org
+
+.blocklyRectangularDropdownMenu .goog-menuitem-highlight, .blocklyRectangularDropdownMenu .goog-menuitem-hover {
+  background-color: rgba(255, 255, 255, 0.35); }
+.blocklyRectangularDropdownMenu:not(.blocklyGridDropdownMenu) {
+  border-color: #545454 !important; }
+.blocklyRectangularDropdownMenu.blocklyGridDropdownMenu {
+  background-color: white !important;
+  padding-top: 5px !important; }
+  .blocklyRectangularDropdownMenu.blocklyGridDropdownMenu .goog-menuitem {
+    display: inline-block;
+    margin-left: 4px;
+    margin-top: 4px; }
+  .blocklyRectangularDropdownMenu.blocklyGridDropdownMenu .goog-menuitem-highlight, .blocklyRectangularDropdownMenu.blocklyGridDropdownMenu .goog-menuitem-hover {
+    margin: -4px -4px 0 0 !important; }
+
+*/
