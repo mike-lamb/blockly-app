@@ -166,3 +166,64 @@
     margin: -4px -4px 0 0 !important; }
 
 */
+
+.desktop-tooltip, .desktop-tooltip-right {
+  background: #676cff;
+  border-radius: 5px;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+  color: #fff;
+  font-size: 12px;
+  max-width: 400px;
+  opacity: 0.95;
+  padding: 15px 30px 15px 15px;
+  position: absolute;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
+  z-index: 100;
+  font-family: "Open Sans", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-weight: 400;
+}
+
+.close-tooltip {
+  overflow: hidden;
+  background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAq0lEQVR42o2Tyw3DIAxAuYZRWKQdtJkhtYTUNFkmG+TomtRECPmDJR+Cec8Q5BAoEPFB+aaMwQnaM1G+KFNo4BP/sVoShoH3HpekWUBL0sE15lKIlF9LosBw77EkLtx0kSTlO7uwIxmDO8kuwHnkmesPy4JgG+0OxhU+3v1BOPbmShQY+DqRn1SWWHDXQJbwYKiwI1lKIfFgqLAiKQP4rIXEJ5kGnjny6F/wD7W1c9UWRHvCAAAAAElFTkSuQmCC") -0px -0px no-repeat;
+  background-size: contain !important;
+  border: none;
+  box-shadow: none;
+  cursor: pointer;
+  height: 8px !important;
+  padding: 0;
+  position: absolute;
+  right: 10px;
+  text-shadow: none;
+  top: 10px;
+  width: 8px !important;
+  transition: all 0.5s ease-in-out;
+  align-items: flex-start;
+  text-align: center;
+  color: white;
+  margin: 0em;
+  font: normal normal normal 13.3333330154419px/normal Arial;
+  text-rendering: auto;
+  letter-spacing: normal;
+  word-spacing: normal;
+  text-indent: 0px;
+  display: inline-block;
+}
+
+.close-tooltip:hover {
+  overflow: hidden;
+  background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAkCAYAAADhAJiYAAABA0lEQVR42s3YWw7CIBAFUBJX6sY05Yt0LWUD1qWUoPShabUPZu5VSOaPDOeDwMwYs1g358+t85dY1ydDWil3OiOdtblxxHTPiK1rKgZqwDTVcIbvVlFzzBRY1AITV1HfMVjUCuYTtY3BoHYwc9Td+evORhXqIKaPZJluvGWgcjDJ8MrNQIkxi7cBglJjkCgYBoGCYzQoGkaKomJkKDKGgLKwfxGAsvDKQYGytNpKgLLMQi/3naEVeUIMESXHEFB6DBCFwwBQeZh+n6WhcjHvz5WAkmAYRZ4ag8yBTYTIhcSoczIwKlRxjeLYSocCWulwsL//ybAhHJyA/GkcU+TAqpSR3gPoxdi+Al/ylgAAAABJRU5ErkJggg==") -0px -0px no-repeat;
+}
+
+.desktop-tooltip:after {
+  border-bottom: 10px solid transparent;
+  border-right: 10px solid #676cff;
+  border-top: 10px solid transparent;
+  content: "";
+  display: block;
+  left: -10px;
+  margin-top: -10px;
+  position: absolute;
+  top: 50%;
+}

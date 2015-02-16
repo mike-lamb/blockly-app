@@ -837,6 +837,23 @@ Blockly.BlockSvg.prototype.renderDrawRight_ = function(steps, highlightSteps,
   return cursorY;
 };
 
+
+/**
+ * Close tooltips, context menus, dropdown selections, etc.
+ * @param {boolean=} opt_allowToolbox If true, don't close the toolbox.
+ */
+Blockly.hideChaff = function(opt_allowToolbox) {
+  Blockly.Tooltip.hide();
+  Blockly.WidgetDiv.hide();
+  if (!opt_allowToolbox &&
+      Blockly.mainWorkspace.toolbox_ &&
+      Blockly.mainWorkspace.toolbox_.flyout_ &&
+      Blockly.mainWorkspace.toolbox_.flyout_.autoClose) {
+    Blockly.mainWorkspace.toolbox_.clearSelection();
+  }
+  checkTutorialState();
+};
+
 // UI constants for rendering blocks.
 /**
  * Horizontal space between elements.

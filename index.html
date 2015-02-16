@@ -30,20 +30,23 @@
 
 	<script src="js/blockly-app.js"></script>
 	<link rel="stylesheet" type="text/css" href="css/blockly-app.css" />
+  <link rel="stylesheet" type="text/css" href="css/dialog.css" />
   <link rel='stylesheet' type='text/css' href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' />
   <link rel='stylesheet' type='text/css' href='http://fonts.googleapis.com/css?family=Lato' />
   <link rel='stylesheet' type='text/css' href='http://fonts.googleapis.com/css?family=Montserrat' >
   <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" />
   <link rel="stylesheet" type="text/css" href="css/top-menu-bar.css" />
+  <link rel="stylesheet" type="text/css" href="http://cdn.jsdelivr.net/hint.css/1.3.2/hint.min.css" />
 	<title>Stackbot</title>
 </head>
 <body>
 
 <nav id="nav">
   <ul>
-    <li><a href="#"><i class="fa fa-save fa-2x"></i><Br/>Save</a></li>
-    <li><a href="#"><i class="fa fa-question-circle fa-2x"></i><Br/>Help</a></li>
-    <li><a href="#"><i class="fa fa-trash fa-2x"></i><Br/>Clear</a></li>
+    <li><a href="#saveDialog" onclick="save()"><i class="fa fa-save fa-2x"></i><Br/>Save</a></li>
+    <li><a href="#helpDialog"><i class="fa fa-question-circle fa-2x"></i><Br/>Help</a></li>
+    <li><a href="#clearDialog"><i class="fa fa-trash fa-2x"></i><Br/>Clear</a></li>
+    <li><a href="#settingsDialog"><i class="fa fa-cog fa-2x"></i><Br/>Settings</a></li>
     </ul>
 </nav>
 
@@ -55,8 +58,12 @@
 
 <xml id="toolbox" style="display: none">
   <category name="Start">
-    <block type="ds_whenthen"></block>
+    <block type="ds_rule">
+      <field name="RULENAME">Enter Rule Name</field>
+      <statement name="RULEIMPL"><block type="ds_whenthen"></block></statement>
+    </block>
     <block type="ds_rule"></block>
+    <block type="ds_whenthen"></block>
   </category>
   <category name="CloudWatch">
     <block type="controls_if"></block>
@@ -95,7 +102,86 @@
       {toolbox: document.getElementById('toolbox'),
        trashcan: false,
        scrollbars: false});
+
+  Blockly.addChangeListener(blocklyChangeListener);
+
 </script>
+
+
+<!-- Dialogs -->
+<div id="clearDialog" class="modalDialog">
+  <div>
+    <a href="#close" title="Close" class="close">X</a>
+    <h2>Clear everything?</h2>
+    <p>This will clear all pieces.</p>
+    <p>
+      <a class="nectar-button medium extra-color-1" href="#" onclick="clearAllBlocks();" data-color-override="false"><span>OK, clear everything</span> </a>
+      &nbsp;&nbsp;&nbsp;
+      <a class="nectar-button medium extra-color-1" href="#close" data-color-override="false"><span>Cancel</span> </a>
+    </p>
+  </div>
+</div>
+
+
+<div id="helpDialog" class="modalDialog">
+  <div>
+    <a href="#close" title="Close" class="close">X</a>
+    <h2>Stackbot Help</h2>
+    <p>For a full getting started guide, please go to help.stackbot.co</p>
+  </div>
+</div>
+
+<div id="saveDialog" class="modalDialog">
+  <div>
+    <a href="#close" title="Close" class="close">X</a>
+    <h2>Saving...</h2>
+    <p>Your application is being saved and deployed</p>
+  </div>
+</div>
+
+<div id="settingsDialog" class="modalDialog">
+  <div>
+    <a href="#close" title="Close" class="close">X</a>
+    <h2>Settings</h2>
+    <p>Save URL<input type="text" /></p>
+    <p>
+      <a class="nectar-button medium extra-color-1" href="#" onclick="saveSettings();" data-color-override="false"><span>Save</span> </a>
+      &nbsp;&nbsp;&nbsp;
+      <a class="nectar-button medium extra-color-1" href="#close" onclick="debugToConsole();" data-color-override="false"><span>Cancel</span> </a>
+    </p>
+  </div>
+</div>
+
+<!-- Tooltips -->
+<div class="desktop-tooltip tutorial-1" style="left: 226px; top: 100px;">
+  <button type="button" class="close-tooltip" onclick="dismissTooltip(this);"></button>
+  <div class="message">Select the 'Start' category<br> to show the starting blocks.</div>
+</div>
+
+<div class="desktop-tooltip tutorial-2" style="left: 426px; top: 150px; display:none;">
+  <button type="button" class="close-tooltip" onclick="dismissTooltip(this);"></button>
+  <div class="message">Drag the Rule/When/Then block<br> on to the workspace.</div>
+</div>
+
+<div class="desktop-tooltip tutorial-3" style="left: 226px; top: 240px; display:none;">
+  <button type="button" class="close-tooltip" onclick="dismissTooltip(this);"></button>
+  <div class="message">Next select the 'DynamoDB' category<br> to show the scaling blocks.</div>
+</div>
+
+<div class="desktop-tooltip tutorial-4" style="left: 656px; top: 108px; display:none;">
+  <button type="button" class="close-tooltip" onclick="dismissTooltip(this);"></button>
+  <div class="message">Select the 'Consumed read capacity' <br> or the 'Consumed write capacity' <br> block, and connect it to the <br> 'When' condition on the workspace.</div>
+</div>
+
+<div class="desktop-tooltip tutorial-5" style="left: 226px; top: 240px; display:none;">
+  <button type="button" class="close-tooltip" onclick="dismissTooltip(this);"></button>
+  <div class="message">Open the 'DynamoDB' category again<br> to select the capacity threshold block.</div>
+</div>
+
+<div class="desktop-tooltip tutorial-6" style="left: 606px; top: 238px; display:none;">
+  <button type="button" class="close-tooltip" onclick="dismissTooltip(this);"></button>
+  <div class="message">Select a '% of provisioned' threshold block <br> and connect it to the 'Capacity' <br> block you added to the workspace <br> in the previous step.</div>
+</div>
 
 </body>
 </html>
