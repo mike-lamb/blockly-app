@@ -31,7 +31,9 @@ goog.require('Blockly.Drools');
 Blockly.Drools['variables_get'] = function(block) {
   // Variable getter.
   console.log('v_g:'+block.getFieldValue('VAR'));
-  var code = block.getFieldValue('VAR');
+  
+  var code = block.objValue.getCodeValue(); // block.getFieldValue('VAR');
+  console.log(code);
   return [code, Blockly.Drools.ORDER_ATOMIC];
 };
 

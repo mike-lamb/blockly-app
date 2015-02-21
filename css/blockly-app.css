@@ -65,71 +65,107 @@
  5 = Notifications
  */
 
+/* 490A3D 
+   BD1550 
+   E97F02
+   F8CA00
+   8A9B0F
+   */
 [id=":1"] > .blocklyTreeRow {
-  border-left: 4px solid #D30E53;
-  color: #D30E53;
+  border-left: 4px solid #490A3D;
+  color: #490A3D;
 }
 
 [id=":1"] > .blocklyTreeRow:hover {
-  background-color: #D30E53;
+  background-color: #490A3D;
 }
 
 [id=":1"] > .blocklyTreeSelected {
-  background-color: #D30E53 !important;
+  background-color: #490A3D !important;
 }
 
 
 [id=":2"] > .blocklyTreeRow {
-  border-left: 4px solid #4A6423;
-  color: #4A6423;
+  border-left: 4px solid #BD1550;
+  color: #BD1550;
 }
 
 [id=":2"] > .blocklyTreeRow:hover {
-  background-color: #4A6423;
+  background-color: #BD1550;
 }
 
 [id=":2"] > .blocklyTreeSelected {
-  background-color: #759C3F !important;
+  background-color: #BD1550 !important;
 }
 
 [id=":3"] > .blocklyTreeRow {
-  border-left: 4px solid #1B476E;
-  color: #1B476E;
+  border-left: 4px solid #2D72B8;
+  color: #2D72B8;
 }
 
 [id=":3"] > .blocklyTreeRow:hover {
-  background-color: #1B476E;
+  background-color: #2D72B8;
 }
 
 [id=":3"] > .blocklyTreeSelected {
-  background-color: #205A99 !important;
+  background-color: #2D72B8 !important;
 }
 
 [id=":4"] > .blocklyTreeRow {
-  border-left: 4px solid #9D5026;
-  color: #9D5026;
+  border-left: 4px solid #E97F02;
+  color: #E97F02;
 }
 
 [id=":4"] > .blocklyTreeRow:hover {
-  background-color: #9D5026;
+  background-color: #E97F02;
 }
 
 [id=":4"] > .blocklyTreeSelected {
-  background-color: #F48536 !important;
+  background-color: #E97F02 !important;
 }
 
 [id=":5"] > .blocklyTreeRow {
-  border-left: 4px solid #5C2D51;
-  color: #5C2D51;
+  border-left: 4px solid #8A9B0F;
+  color: #8A9B0F;
 }
 
 [id=":5"] > .blocklyTreeRow:hover {
-  background-color: #5C2D51;
+  background-color: #8A9B0F;
 }
 
 [id=":5"] > .blocklyTreeSelected {
-  background-color: #5C2D51 !important;
+  background-color: #8A9B0F !important;
 }
+
+[id=":6"] > .blocklyTreeRow {
+  border-left: 4px solid #FFB319;
+  color: #FFB319;
+}
+
+[id=":6"] > .blocklyTreeRow:hover {
+  background-color: #FFB319;
+}
+
+[id=":6"] > .blocklyTreeSelected {
+  background-color: #FFB319 !important;
+}
+
+[id=":7"] > .blocklyTreeRow {
+  border-left: 4px solid #E3292E;
+  color: #E3292E;
+}
+
+[id=":7"] > .blocklyTreeRow:hover {
+  background-color: #E3292E;
+}
+
+[id=":7"] > .blocklyTreeSelected {
+  background-color: #E3292E !important;
+}
+
+
+
+
 
 
 /* Block styling */

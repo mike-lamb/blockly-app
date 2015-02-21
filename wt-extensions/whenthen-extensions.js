@@ -59,12 +59,15 @@ Blockly.Block.prototype.removeFields = function(param) {
 
 
 // Our extended variable type
-function WhenThenVariable(name, colour, propertyTypes, icon) {
+function WhenThenVariable(name, colour, propertyTypes, icon, code) {
     this.name = name;
+    this.code = code;
     this.colour = colour;
-    this.objectStructure = Object.keys(propertyTypes);
-    // Lose the first element which is just a .
-    this.objectStructure.shift();
+    if (propertyTypes) {
+      this.objectStructure = Object.keys(propertyTypes);
+      // Lose the first element which is just a .
+      this.objectStructure.shift();
+    }
     this.propertyTypes = propertyTypes;
     this.icon = icon;
 }
@@ -79,12 +82,16 @@ WhenThenVariable.prototype.replace = function(a, b) {
         return this.name.replace(a, b);
     return 'unknown';
 };
+WhenThenVariable.prototype.getCodeValue = function() {
+  return this.code;
+};
 // Method to serialize as XML
 WhenThenVariable.prototype.toXml = function(container) {
     container.setAttribute('name', this.name);
     container.setAttribute('colour', this.colour);
     container.setAttribute('propertyTypes', JSON.stringify(this.propertyTypes));
     container.setAttribute('icon', this.icon);
+    container.setAttribute('code', this.code);
     return container;
 };
 // Method to deserialize from XML
@@ -94,7 +101,8 @@ WhenThenVariable.prototype.fromXml = function(container) {
     var propertyTypesString = container.getAttribute('propertyTypes');
     var propertyTypes = JSON.parse(propertyTypesString);
     var icon = container.getAttribute('icon');
-    var result = new WhenThenVariable(name, colour, propertyTypes, icon);
+    var code = container.getAttribute('code');
+    var result = new WhenThenVariable(name, colour, propertyTypes, icon, code);
    
     return result;
 };
@@ -109,7 +117,7 @@ WhenThenVariable.prototype.fromXml = function(container) {
  * @param {!Array.<number>} gaps List of widths between blocks.
  * @param {number} margin Standard margin width for calculating gaps.
  * @param {!Blockly.Workspace} workspace The flyout's workspace.
- */
+ 
 Blockly.Variables.flyoutCategory = function(blocks, gaps, margin, workspace) {
   var variableList = Blockly.Variables.allVariables();
 // WTDELTA  variableList.sort(goog.string.caseInsensitiveCompare);
@@ -143,6 +151,50 @@ Blockly.Variables.flyoutCategory = function(blocks, gaps, margin, workspace) {
     }
   }
 };
+*/
+
+
+/**
+ * Construct the blocks required by the flyout for the variable category.
+ * @param {!Array.<!Blockly.Block>} blocks List of blocks to show.
+ * @param {!Array.<number>} gaps List of widths between blocks.
+ * @param {number} margin Standard margin width for calculating gaps.
+ * @param {!Blockly.Workspace} workspace The flyout's workspace.
+ */
+Blockly.Variables.flyoutCategory = function(blocks, gaps, margin, workspace) {
+  var variableList = Blockly.Variables.allVariables(workspace.targetWorkspace);
+  //variableList.sort(goog.string.caseInsensitiveCompare);
+  // In addition to the user's variables, we also want to display the default
+  // variable name at the top.  We also don't want this duplicated if the
+  // user has created a variable of the same name.
+  //variableList.unshift(null);
+  var defaultVariable = undefined;
+  for (var i = 0; i < variableList.length; i++) {
+    if (variableList[i] === defaultVariable) {
+      continue;
+    }
+    var getBlock = Blockly.Blocks['variables_get'] ?
+        Blockly.Block.obtain(workspace, 'variables_get') : null;
+    getBlock && getBlock.initSvg();
+    var setBlock = Blockly.Blocks['variables_set'] ?
+        Blockly.Block.obtain(workspace, 'variables_set') : null;
+    setBlock && setBlock.initSvg();
+    if (variableList[i] === null) {
+//      defaultVariable = (getBlock || setBlock).getVars()[0];
+    } else {
+      getBlock && getBlock.setFieldValue(variableList[i], 'VAR');
+      setBlock && setBlock.setFieldValue(variableList[i], 'VAR');
+    }
+    setBlock && blocks.push(setBlock);
+    getBlock && blocks.push(getBlock);
+    if (getBlock && setBlock) {
+      gaps.push(margin, margin * 3);
+    } else {
+      gaps.push(margin * 2);
+    }
+  }
+};
+
 
 // Our own variable block
 
@@ -199,10 +251,11 @@ Blockly.Blocks['variables_get'] = {
     
            //   .appendField(dropdown, "PROP.");
     
+    console.log("ObjValue:"+this.objValue);
     if (this.objValue) {
         refresh();
     } else {
-        this.setColour(330);
+        this.setColour('#2D72B8');  // 330
     }
     
     
@@ -448,7 +501,7 @@ Blockly.FieldImage.prototype.init = function(block) {
 /**
  * Add highlighting around this connection.
 
- Same as original, expect y position has 8 added to it
+ Same as original, except y position optionally has 8 added to it
  */
 Blockly.Connection.prototype.highlight = function() {
   var steps;
@@ -466,7 +519,12 @@ Blockly.Connection.prototype.highlight = function() {
   }
   var xy = this.sourceBlock_.getRelativeToSurfaceXY();
   var x = this.x_ - xy.x;
-  var y = this.y_ - xy.y + 8;
+  var y = this.y_ - xy.y
+  console.log('type=');
+  console.log(this);
+  if (this.type == 1) {   // WT hack - not sure what '1' is - apart from it comes from debug
+    y = y + 8;
+  }
   Blockly.Connection.highlightedPath_ = Blockly.createSvgElement('path',
       {'class': 'blocklyHighlightedConnectionPath',
        'd': steps,
@@ -550,7 +608,7 @@ Blockly.BlockSvg.prototype.renderDrawBottom_ =
 
   // Should the bottom-left corner be rounded or square?
   if (this.squareBottomLeftCorner_) {
-    steps.push('H 0');
+    steps.push('H 1');
     if (!Blockly.RTL) {
       highlightSteps.push('M', '1,' + cursorY);
     }
@@ -839,9 +897,51 @@ Blockly.BlockSvg.prototype.renderDrawRight_ = function(steps, highlightSteps,
 
 
 /**
+ * Render the top edge of the block.
+ * @param {!Array.<string>} steps Path of block outline.
+ * @param {!Array.<string>} highlightSteps Path of block highlights.
+ * @param {!Object} connectionsXY Location of block.
+ * @param {number} rightEdge Minimum width of block.
+ * @private
+ */
+Blockly.BlockSvg.prototype.renderDrawTop_ =
+    function(steps, highlightSteps, connectionsXY, rightEdge) {
+  // Position the cursor at the top-left starting point.
+  if (this.squareTopLeftCorner_) {
+    steps.push('m 1,0');
+    highlightSteps.push('m 1,1');
+  } else {
+    steps.push(Blockly.BlockSvg.TOP_LEFT_CORNER_START);
+    highlightSteps.push(Blockly.RTL ?
+        Blockly.BlockSvg.TOP_LEFT_CORNER_START_HIGHLIGHT_RTL :
+        Blockly.BlockSvg.TOP_LEFT_CORNER_START_HIGHLIGHT_LTR);
+    // Top-left rounded corner.
+    steps.push(Blockly.BlockSvg.TOP_LEFT_CORNER);
+    highlightSteps.push(Blockly.BlockSvg.TOP_LEFT_CORNER_HIGHLIGHT);
+  }
+
+  // Top edge.
+  if (this.previousConnection) {
+    steps.push('H', Blockly.BlockSvg.NOTCH_WIDTH - 15);
+    highlightSteps.push('H', Blockly.BlockSvg.NOTCH_WIDTH - 15);
+    steps.push(Blockly.BlockSvg.NOTCH_PATH_LEFT);
+    highlightSteps.push(Blockly.BlockSvg.NOTCH_PATH_LEFT_HIGHLIGHT);
+    // Create previous block connection.
+    var connectionX = connectionsXY.x + (Blockly.RTL ?
+        -Blockly.BlockSvg.NOTCH_WIDTH : Blockly.BlockSvg.NOTCH_WIDTH);
+    var connectionY = connectionsXY.y;
+    this.previousConnection.moveTo(connectionX, connectionY);
+    // This connection will be tightened when the parent renders.
+  }
+  steps.push('H', rightEdge);
+  highlightSteps.push('H', rightEdge + (Blockly.RTL ? -1 : 0));
+  this.width = rightEdge;
+};
+
+/**
  * Add highlighting around this connection.
  No Change - just moved to pick up the redefined values
- */
+
 Blockly.Connection.prototype.highlight = function() {
   var steps;
   if (this.type == Blockly.INPUT_VALUE || this.type == Blockly.OUTPUT_VALUE) {
@@ -865,7 +965,7 @@ Blockly.Connection.prototype.highlight = function() {
        transform: 'translate(' + x + ', ' + y + ')'},
       this.sourceBlock_.getSvgRoot());
 };
-
+ */
 /**
  * Close tooltips, context menus, dropdown selections, etc.
  * @param {boolean=} opt_allowToolbox If true, don't close the toolbox.

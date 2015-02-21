@@ -5,8 +5,12 @@
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
+  <!-- Jquery -->
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+  
+
   <!-- Blockly core -->
-	<script src="../blockly/blockly_compressed.js"></script>
+	<script src="../blockly/blockly_uncompressed.js"></script>
 	<script src="../blockly/blocks_compressed.js"></script>
 	<script src="../blockly/msg/js/en.js"></script>
 
@@ -29,6 +33,7 @@
   <script type="text/javascript" src="wt-blocks/dynamoscaling.js"></script>
 
 	<script src="js/blockly-app.js"></script>
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
 	<link rel="stylesheet" type="text/css" href="css/blockly-app.css" />
   <link rel="stylesheet" type="text/css" href="css/dialog.css" />
   <link rel='stylesheet' type='text/css' href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' />
@@ -47,7 +52,8 @@
     <li><a href="#helpDialog"><i class="fa fa-question-circle fa-2x"></i><Br/>Help</a></li>
     <li><a href="#clearDialog"><i class="fa fa-trash fa-2x"></i><Br/>Clear</a></li>
     <li><a href="#settingsDialog"><i class="fa fa-cog fa-2x"></i><Br/>Settings</a></li>
-    </ul>
+    <li><a href="#" onclick="toggleTutorial(this)"><i id="toggleTutorialIcon" class="fa fa-toggle-on fa-2x"></i><Br/>Tutorial</a></li>
+  </ul>
 </nav>
 
 
@@ -62,28 +68,32 @@
       <field name="RULENAME">Enter Rule Name</field>
       <statement name="RULEIMPL"><block type="ds_whenthen"></block></statement>
     </block>
-    <block type="ds_rule"></block>
-    <block type="ds_whenthen"></block>
   </category>
-  <category name="CloudWatch">
-    <block type="controls_if"></block>
-    <block type="controls_whileUntil"></block>
-  </category>
-  <category name="DynamoDB">
-    <block type="ds_consumed_reads"></block>
-    <block type="ds_consumed_writes"></block>
-    <block type="ds_provisioned_reads_level"></block>
-    <block type="ds_provisioned_writes_level"></block>
-    <block type="ds_consumed_reads_level"></block>
-    <block type="ds_consumed_writes_level"></block>
-    <block type="ds_set_provisioned_reads"></block>
-    <block type="ds_set_provisioned_writes"></block>
-    <block type="ds_set_provisioned_reads_and_writes"></block>
-  </category>
-  <category name="Route 53">
+  <category name="Logic">
     <block type="logic_compare"></block>
     <block type="logic_operation"></block>
     <block type="logic_boolean"></block>
+    <block type="logic_negate"></block>
+  </category>
+  <category name="DynamoDB">
+    <block type="ds_consumed_reads"></block>
+ <!--   <block type="ds_consumed_writes"></block>-->
+ <!--   <block type="ds_provisioned_reads_level"></block>
+    <block type="ds_provisioned_writes_level"></block> 
+    <block type="ds_consumed_reads_level"></block>
+    <block type="ds_consumed_writes_level"></block> -->
+    <block type="ds_set_provisioned_reads"></block>
+    <block type="ds_set_provisioned_writes"></block> 
+<!--    <block type="ds_set_provisioned_reads_and_writes"></block> -->
+  </category>
+  <category name="Math">
+    <block type="math_number"></block>
+    <block type="math_arithmetic"></block>
+    <block type="math_percentage"></block>
+  </category>
+  <category name="Text">
+    <block type="text"></block>
+    <block type="robText_join"></block>
   </category>
   <category name="Notifications">
     <block type="slack_message"></block>
@@ -95,17 +105,8 @@
     <block type="hall_message"></block>
     <block type="twilio_sms"></block>
   </category>
+  <category name="Variables" custom="VARIABLE"></category>
 </xml>
-
-<script>
-  Blockly.inject(document.getElementById('blocklyDiv'),
-      {toolbox: document.getElementById('toolbox'),
-       trashcan: false,
-       scrollbars: false});
-
-  Blockly.addChangeListener(blocklyChangeListener);
-
-</script>
 
 
 <!-- Dialogs -->
@@ -143,17 +144,43 @@
   <div>
     <a href="#close" title="Close" class="close">X</a>
     <h2>Settings</h2>
+
+    <form class="pure-form pure-form-aligned">
+        <fieldset>
+            <div class="pure-control-group">
+                <label for="moduleIdEntry">ModuleId</label>
+                <input id="moduleIdEntry" type="text" data-bind-12345="moduleId">
+            </div>
+
+            <div class="pure-control-group">
+                <label for="saveVersionEntry">Version</label>
+                <input id="moduleIdEntry" type="text" data-bind-12345="version">
+            </div>
+
+            <div class="pure-control-group">
+                <label for="saveUrlEntry">Save URL</label>
+                <input id="saveUrlEntry" type="text" data-bind-12345="saveUrl">
+            </div>
+
+
+            <div class="pure-controls">
+                <a class="nectar-button medium extra-color-1" href="#" onclick="saveSettings();" data-color-override="false"><span>Save</span> </a>
+                &nbsp;&nbsp;&nbsp;
+                <a class="nectar-button medium extra-color-1" href="#close" onclick="debugToConsole();" data-color-override="false"><span>Cancel</span> </a>
+            </div>
+        </fieldset>
+    </form>
+
+<!--
     <p>Save URL<input type="text" /></p>
     <p>
-      <a class="nectar-button medium extra-color-1" href="#" onclick="saveSettings();" data-color-override="false"><span>Save</span> </a>
-      &nbsp;&nbsp;&nbsp;
-      <a class="nectar-button medium extra-color-1" href="#close" onclick="debugToConsole();" data-color-override="false"><span>Cancel</span> </a>
-    </p>
+      
+    </p>-->
   </div>
 </div>
 
 <!-- Tooltips -->
-<div class="desktop-tooltip tutorial-1" style="left: 226px; top: 100px;">
+<div class="desktop-tooltip tutorial-1" style="left: 226px; top: 100px; display:none;">
   <button type="button" class="close-tooltip" onclick="dismissTooltip(this);"></button>
   <div class="message">Select the 'Start' category<br> to show the starting blocks.</div>
 </div>
@@ -168,20 +195,33 @@
   <div class="message">Next select the 'DynamoDB' category<br> to show the scaling blocks.</div>
 </div>
 
-<div class="desktop-tooltip tutorial-4" style="left: 656px; top: 108px; display:none;">
+<div class="desktop-tooltip tutorial-4" style="left: 656px; top: 83px; display:none;">
   <button type="button" class="close-tooltip" onclick="dismissTooltip(this);"></button>
-  <div class="message">Select the 'Consumed read capacity' <br> or the 'Consumed write capacity' <br> block, and connect it to the <br> 'When' condition on the workspace.</div>
+  <div class="message">Drag the 'Consumed read are greater than' <br> block and connect it to the <br> 'When' condition on the workspace.</div>
 </div>
 
-<div class="desktop-tooltip tutorial-5" style="left: 226px; top: 240px; display:none;">
+<div class="desktop-tooltip tutorial-5" style="left: 226px; top: 310px; display:none;">
   <button type="button" class="close-tooltip" onclick="dismissTooltip(this);"></button>
-  <div class="message">Open the 'DynamoDB' category again<br> to select the capacity threshold block.</div>
+  <div class="message">Open the 'Math' category<br> to show the math functions.</div>
 </div>
 
 <div class="desktop-tooltip tutorial-6" style="left: 606px; top: 238px; display:none;">
   <button type="button" class="close-tooltip" onclick="dismissTooltip(this);"></button>
   <div class="message">Select a '% of provisioned' threshold block <br> and connect it to the 'Capacity' <br> block you added to the workspace <br> in the previous step.</div>
 </div>
+
+
+<script>
+  Blockly.inject(document.getElementById('blocklyDiv'),
+      {toolbox: document.getElementById('toolbox'),
+       trashcan: false,
+       scrollbars: false});
+
+  Blockly.addChangeListener(blocklyChangeListener);
+
+  initFromQueryParams();
+
+</script>
 
 </body>
 </html>

@@ -32,6 +32,8 @@ Blockly.Drools['ds_whenthen'] = function(block) {
     var branch = Blockly.Drools.statementToCode(block, 'THEN');
     var code = '';
     code += 'when\n';
+    // We'd normally add the real argument, but for now we're hardcoding the alarm as the argument
+    argument = 'state: stackbot.amazonaws.cloudwatch.AlarmState(stateValue == StateValue.ALARM)';
     code += argument;
     code += '\n';
     code += 'then\n';
@@ -67,6 +69,18 @@ Blockly.Drools['ds_rule'] = function(block) {
     var ruleName = Blockly.Drools.quote_(block.getFieldValue('RULENAME'));
     var branch = Blockly.Drools.statementToCode(block, 'RULEIMPL');
     var code = '';
+
+    // Start hack
+    code += 'package whenthen.dynamodb.chat;' + '\n';
+    code += '\n';
+   // code += 'import stackbot.amazonaws.cloudwatch.AlarmState;' + '\n';
+   // code += 'import stackbot.slack.ChatPostMessage;' + '\n';
+   // code += 'import java.util.Map;' + '\n';
+   // code += '\n';
+    code += 'global java.util.Map dimensions;' + '\n';
+    code += '\n';
+    // End hack
+
     code += 'rule ' + ruleName + "\n";
     code += branch;
     code += 'end';
@@ -84,9 +98,13 @@ Blockly.Blocks['ds_consumed_reads'] = {
 
         var dropdown = new Blockly.FieldDropdown([['greater than', '>'], ['less than', '<']]);
 
+        var readWritedropdown = new Blockly.FieldDropdown([['reads', 'reads'], ['writes', 'writes']]);
+
         this.appendValueInput('CAPACITY')
                 .appendField(new Blockly.FieldImage(dynamoImageUrl, 15, 15))
-                .appendField('Consumed read capacity is ')
+                .appendField('Consumed')
+                .appendField(readWritedropdown)
+                .appendField(' are ')
                 .appendField(dropdown, 'CAPACITY_OPERATOR');
         this.setPreviousStatement(false);
         this.setNextStatement(false);
@@ -100,17 +118,23 @@ Blockly.Blocks['ds_consumed_reads'] = {
         propertyTypes['.'] = 'CapacityAlarm';
         
         propertyTypes['.Table Name'] = ['String', 'alarm.tableName' ];
-        propertyTypes['.Global Secondary Index Name'] = ['String', 'alarm.globalSecondaryIndexName'];
-        propertyTypes['.Start Time'] = ['Number', 'alarm.startTime'];
-        propertyTypes['.Duration'] = ['Number', 'alarm.duration'];
-        propertyTypes['.Read Throttle Events'] = ['java.lang.Double', 'alarm.readThrottleEvents'];
-        propertyTypes['.Write Throttle Events'] = ['java.lang.Double', 'alarm.writeThrottleEvents'];
-        propertyTypes['.Provisioned Read Capacity Units'] = ['java.lang.Double', 'alarm.provisionedReadCapacityUnits'];
-        propertyTypes['.Provisioned Write Capacity Units'] = ['java.lang.Double', 'alarm.provisionedWriteCapacityUnits'];
-        propertyTypes['.Consumed Read Capacity Units'] = ['java.lang.Double', 'alarm.consumedReadCapacityUnits'];
-        propertyTypes['.Consumed Write Capacity Units'] = ['java.lang.Double', 'alarm.consumedWriteCapacityUnits'];
-        var obj = new WhenThenVariable("CapacityAlarm", dynamoDBColor, propertyTypes, dynamoImageUrl);
-        outputs.push(obj);
+       // propertyTypes['.Global Secondary Index Name'] = ['String', 'alarm.globalSecondaryIndexName'];
+       // propertyTypes['.Start Time'] = ['Number', 'alarm.startTime'];
+       // propertyTypes['.Duration'] = ['Number', 'alarm.duration'];
+       // propertyTypes['.Read Throttle Events'] = ['java.lang.Double', 'alarm.readThrottleEvents'];
+       // propertyTypes['.Write Throttle Events'] = ['java.lang.Double', 'alarm.writeThrottleEvents'];
+        propertyTypes['.Provisioned Capacity'] = ['java.lang.Double', 'alarm.provisionedReadCapacityUnits'];
+      //  propertyTypes['.Provisioned Write Capacity Units'] = ['java.lang.Double', 'alarm.provisionedWriteCapacityUnits'];
+        propertyTypes['.Consumed Capacity'] = ['java.lang.Double', 'alarm.consumedReadCapacityUnits'];
+     //   propertyTypes['.Consumed Write Capacity Units'] = ['java.lang.Double', 'alarm.consumedWriteCapacityUnits'];
+        // var obj = new WhenThenVariable("Alarm", dynamoDBColor, propertyTypes, dynamoImageUrl);
+        // outputs.push(obj);
+        var tableName = new WhenThenVariable("table name", dynamoDBColor, null, dynamoImageUrl, '((String) dimensions.get("TableName"))');
+        outputs.push(tableName);
+        var provisioned = new WhenThenVariable("provisioned", dynamoDBColor, null, dynamoImageUrl, 'state.getThreshold()');
+        outputs.push(provisioned);
+        var consumed = new WhenThenVariable("consumed", dynamoDBColor, null, dynamoImageUrl, 'state.getDatapoint()');
+        outputs.push(consumed);
         return outputs;
     }
 };
@@ -118,7 +142,8 @@ Blockly.Blocks['ds_consumed_reads'] = {
 Blockly.Drools['ds_consumed_reads'] = function(block) {
     var operator = block.getFieldValue('CAPACITY_OPERATOR');
     var capacity = Blockly.Drools.valueToCode(block, 'CAPACITY', Blockly.Drools.ORDER_ATOMIC) || '0';
-    var code = 'alarm: co.whenthen.snap.examples.fuse.events.CapacityAlarm(consumedReadCapacityUnits ' + operator + ' ' + capacity + ') over window:length(1)';
+    // var code = 'alarm: co.whenthen.snap.examples.fuse.events.CapacityAlarm(consumedReadCapacityUnits ' + operator + ' ' + capacity + ') over window:length(1)';
+    var code = '';
     return [code, Blockly.Drools.ORDER_ATOMIC];
 };
 
@@ -155,7 +180,8 @@ Blockly.Drools['ds_consumed_writes'] = function(block) {
     var operator = block.getFieldValue('CAPACITY_OPERATOR');
     var capacity = Blockly.Drools.valueToCode(block, 'CAPACITY', Blockly.Drools.ORDER_ATOMIC) || '0';
     console.log(capacity);
-    var code = 'alarm: co.whenthen.snap.examples.fuse.events.CapacityAlarm(consumedWriteCapacityUnits ' + operator + ' ' + capacity + ') over window:length(1)';
+    // var code = 'alarm: co.whenthen.snap.examples.fuse.events.CapacityAlarm(consumedWriteCapacityUnits ' + operator + ' ' + capacity + ') over window:length(1)';
+    var code = '';
     return [code, Blockly.Drools.ORDER_ATOMIC];
 };
 
@@ -188,8 +214,9 @@ Blockly.Blocks['ds_provisioned_reads_level'] = {
 Blockly.Drools['ds_provisioned_reads_level'] = function(block) {
     // Rule name.
     var percentage = block.getFieldValue('PERCENTAGE');
-    var code = '((alarm.provisionedReadCapacityUnits * ' + percentage + ') / 100)';
-    return [code, Blockly.Drools.ORDER_ATOMIC];
+    // var code = '((alarm.provisionedReadCapacityUnits * ' + percentage + ') / 100)';
+    var code = '';
+    // return [code, Blockly.Drools.ORDER_ATOMIC];
 };
 
 // ----------------------------------------\
@@ -221,7 +248,8 @@ Blockly.Blocks['ds_provisioned_writes_level'] = {
 Blockly.Drools['ds_provisioned_writes_level'] = function(block) {
     // Rule name.
     var percentage = block.getFieldValue('PERCENTAGE');
-    var code = '((alarm.provisionedWriteCapacityUnits * ' + percentage + ') / 100)'
+    //var code = '((alarm.provisionedWriteCapacityUnits * ' + percentage + ') / 100)'
+    var code = '';
     return [code, Blockly.Drools.ORDER_ATOMIC];
 };
 
@@ -254,7 +282,8 @@ Blockly.Blocks['ds_consumed_reads_level'] = {
 
 Blockly.Drools['ds_consumed_reads_level'] = function(block) {
     var percentage = block.getFieldValue('PERCENTAGE');
-    var code = '((alarm.consumedReadCapacityUnits * ' + percentage + ') / 100)';
+    // var code = '((alarm.consumedReadCapacityUnits * ' + percentage + ') / 100)';
+    var code = '';
     return [code, Blockly.Drools.ORDER_ATOMIC];
 };
 
@@ -287,7 +316,8 @@ Blockly.Blocks['ds_consumed_writes_level'] = {
 Blockly.Drools['ds_consumed_writes_level'] = function(block) {
     // Rule name.
     var percentage = block.getFieldValue('PERCENTAGE');
-    var code = '((alarm.consumedWriteCapacityUnits * ' + percentage + ') / 100)';
+    // var code = '((alarm.consumedWriteCapacityUnits * ' + percentage + ') / 100)';
+    var code = '';
     return [code, Blockly.Drools.ORDER_ATOMIC];
 };
 
@@ -301,7 +331,7 @@ Blockly.Blocks['ds_set_provisioned_reads'] = {
 
         this.appendValueInput('CAPACITY')
                 .appendField(new Blockly.FieldImage(dynamoImageUrl, 15, 15))
-                .appendField('Set provisioned read capacity to ');
+                .appendField('Set provisioned reads to ');
         this.setPreviousStatement(true);
         this.setNextStatement(true);
         this.setTooltip('Set provisioned read capacity');
@@ -321,12 +351,13 @@ Blockly.Drools['ds_set_provisioned_reads'] = function(block) {
 //  var branch = Blockly.Drools.statementToCode(block, 'RULEIMPL');
     var capacity = Blockly.Drools.valueToCode(block, 'CAPACITY', Blockly.Drools.ORDER_ATOMIC) || '0';
     console.log(capacity);
-    var code = 'co.whenthen.wave.channels.amazonaws.dynamodb.UpdateTableInput input = new co.whenthen.wave.channels.amazonaws.dynamodb.UpdateTableInput();' + '\n';
-    code += 'input.tableName = alarm.tableName;' + '\n';
-    code += 'input.provisionedThroughput = new co.whenthen.wave.channels.amazonaws.dynamodb.ProvisionedThroughput();' + '\n';
-    code += 'input.provisionedThroughput.writeCapacityUnits = alarm.provisionedWriteCapacityUnits;' + '\n';
-    code += 'input.provisionedThroughput.readCapacityUnits = ' + capacity + ';' + '\n';
-    code += 'channels["co.whenthen.wave.channels:aws-dynamodbv2-kie"].send(new co.whenthen.wave.channels.amazonaws.dynamodb.UpdateTable(input))';
+    // var code = 'co.whenthen.wave.channels.amazonaws.dynamodb.UpdateTableInput input = new co.whenthen.wave.channels.amazonaws.dynamodb.UpdateTableInput();' + '\n';
+    // code += 'input.tableName = alarm.tableName;' + '\n';
+    // code += 'input.provisionedThroughput = new co.whenthen.wave.channels.amazonaws.dynamodb.ProvisionedThroughput();' + '\n';
+    // code += 'input.provisionedThroughput.writeCapacityUnits = alarm.provisionedWriteCapacityUnits;' + '\n';
+    // code += 'input.provisionedThroughput.readCapacityUnits = ' + capacity + ';' + '\n';
+    // code += 'channels["co.whenthen.wave.channels:aws-dynamodbv2-kie"].send(new co.whenthen.wave.channels.amazonaws.dynamodb.UpdateTable(input))';
+    var code = '';
     return code;
 };
 
@@ -341,7 +372,7 @@ Blockly.Blocks['ds_set_provisioned_writes'] = {
 
         this.appendValueInput('CAPACITY')
                 .appendField(new Blockly.FieldImage(dynamoImageUrl, 15, 15))
-                .appendField('Set provisioned write capacity to ');
+                .appendField('Set provisioned writes to ');
         this.setPreviousStatement(true);
         this.setNextStatement(true);
         this.setTooltip('Set provisioned write capacity');
@@ -358,13 +389,13 @@ Blockly.Blocks['ds_set_provisioned_writes'] = {
 Blockly.Drools['ds_set_provisioned_writes'] = function(block) {
     var capacity = Blockly.Drools.valueToCode(block, 'CAPACITY', Blockly.Drools.ORDER_ATOMIC) || '0';
     console.log(capacity);
-    var code = 'co.whenthen.wave.channels.amazonaws.dynamodb.UpdateTableInput input = new co.whenthen.wave.channels.amazonaws.dynamodb.UpdateTableInput();' + '\n';
-    code += 'input.tableName = alarm.tableName;' + '\n';
-    code += 'input.provisionedThroughput = new co.whenthen.wave.channels.amazonaws.dynamodb.ProvisionedThroughput();' + '\n';
-    code += 'input.provisionedThroughput.readCapacityUnits = alarm.provisionedReadCapacityUnits;' + '\n';
-    code += 'input.provisionedThroughput.writeCapacityUnits = ' + capacity + ';' + '\n';
-    code += 'channels["co.whenthen.wave.channels:aws-dynamodbv2-kie"].send(new co.whenthen.wave.channels.amazonaws.dynamodb.UpdateTable(input))';
-
+    // var code = 'co.whenthen.wave.channels.amazonaws.dynamodb.UpdateTableInput input = new co.whenthen.wave.channels.amazonaws.dynamodb.UpdateTableInput();' + '\n';
+    // code += 'input.tableName = alarm.tableName;' + '\n';
+    // code += 'input.provisionedThroughput = new co.whenthen.wave.channels.amazonaws.dynamodb.ProvisionedThroughput();' + '\n';
+    // code += 'input.provisionedThroughput.readCapacityUnits = alarm.provisionedReadCapacityUnits;' + '\n';
+    // code += 'input.provisionedThroughput.writeCapacityUnits = ' + capacity + ';' + '\n';
+    // code += 'channels["co.whenthen.wave.channels:aws-dynamodbv2-kie"].send(new co.whenthen.wave.channels.amazonaws.dynamodb.UpdateTable(input))';
+    var code = '';
     return code;
 };
 
@@ -403,13 +434,14 @@ Blockly.Drools['ds_set_provisioned_reads_and_writes'] = function(block) {
     console.log(readCapacity);
     var writeCapacity = Blockly.Drools.valueToCode(block, 'WRITE_CAPACITY', Blockly.Drools.ORDER_ATOMIC) || '0';
     console.log(writeCapacity);
-    var code = 'Set provisioned read capacity to' + ' ' + readCapacity + ' and provisioned write capacity to ' + writeCapacity;
-    var code = 'co.whenthen.wave.channels.amazonaws.dynamodb.UpdateTableInput input = new co.whenthen.wave.channels.amazonaws.dynamodb.UpdateTableInput();' + '\n';
-    code += 'input.tableName = alarm.tableName;' + '\n';
-    code += 'input.provisionedThroughput = new co.whenthen.wave.channels.amazonaws.dynamodb.ProvisionedThroughput();' + '\n';
-    code += 'input.provisionedThroughput.writeCapacityUnits = ' + writeCapacity + ';' + '\n';
-    code += 'input.provisionedThroughput.readCapacityUnits = ' + readCapacity + ';' + '\n';
-    code += 'channels["co.whenthen.wave.channels:aws-dynamodbv2-kie"].send(new co.whenthen.wave.channels.amazonaws.dynamodb.UpdateTable(input))';
+    // var code = 'Set provisioned read capacity to' + ' ' + readCapacity + ' and provisioned write capacity to ' + writeCapacity;
+    // var code = 'co.whenthen.wave.channels.amazonaws.dynamodb.UpdateTableInput input = new co.whenthen.wave.channels.amazonaws.dynamodb.UpdateTableInput();' + '\n';
+    // code += 'input.tableName = alarm.tableName;' + '\n';
+    // code += 'input.provisionedThroughput = new co.whenthen.wave.channels.amazonaws.dynamodb.ProvisionedThroughput();' + '\n';
+    // code += 'input.provisionedThroughput.writeCapacityUnits = ' + writeCapacity + ';' + '\n';
+    // code += 'input.provisionedThroughput.readCapacityUnits = ' + readCapacity + ';' + '\n';
+    // code += 'channels["co.whenthen.wave.channels:aws-dynamodbv2-kie"].send(new co.whenthen.wave.channels.amazonaws.dynamodb.UpdateTable(input))';
+    var code = '';
     return code;
 };
 
@@ -454,10 +486,16 @@ Blockly.Drools['slack_message'] = function(block) {
     console.log(message);
 
     var code = '\n';
-    code += 'co.whenthen.wave.channels.slack.IncomingMessage message = new co.whenthen.wave.channels.slack.IncomingMessage();' + '\n';
-    code += 'message.text = ' + message + ';' + '\n';
-    code += 'message.token = "' + slackChannel + '";' + '\n';
-    code += 'channels["co.whenthen.wave.channels:slack-kie"].send(new co.whenthen.wave.channels.slack.IncomingWebhook(message));' + '\n';
+    // code += 'co.whenthen.wave.channels.slack.IncomingMessage message = new co.whenthen.wave.channels.slack.IncomingMessage();' + '\n';
+    // code += 'message.text = ' + message + ';' + '\n';
+    // code += 'message.token = "' + slackChannel + '";' + '\n';
+    // code += 'channels["co.whenthen.wave.channels:slack-kie"].send(new co.whenthen.wave.channels.slack.IncomingWebhook(message));' + '\n';
+
+
+    code += 'insert(new stackbot.slack.ChatPostMessage().withText("" + ';   // force all types to be converted to a string
+    code +=  message;
+    code += ').withChannel("#sysops").withUsername("Stackbot"));';
+    code += '\n';
 
     return code;
 };
@@ -648,13 +686,13 @@ Blockly.Drools['twilio_sms'] = function(block) {
             Blockly.Drools.ORDER_NONE) || '\'\'';
     console.log(message);
 
-    var code = '\n';
-    code += 'co.whenthen.wave.channels.twilio.api.SendSmsRequest message = new co.whenthen.wave.channels.twilio.api.SendSmsRequest();' + '\n';
-    code += 'message.to = ' + toNumber + ';' + '\n';
-    code += 'message.from = "+442033224230";' + '\n';
-    code += 'message.body = ' + message + ';' + '\n';
-    code += 'channels["co.whenthen.wave.channels:twilio-kie"].send(new co.whenthen.wave.channels.twilio.api.SendSms(message));' + '\n';
-
+    // var code = '\n';
+    // code += 'co.whenthen.wave.channels.twilio.api.SendSmsRequest message = new co.whenthen.wave.channels.twilio.api.SendSmsRequest();' + '\n';
+    // code += 'message.to = ' + toNumber + ';' + '\n';
+    // code += 'message.from = "+442033224230";' + '\n';
+    // code += 'message.body = ' + message + ';' + '\n';
+    // code += 'channels["co.whenthen.wave.channels:twilio-kie"].send(new co.whenthen.wave.channels.twilio.api.SendSms(message));' + '\n';
+    var code = '';
     return code;
 };
 
@@ -689,3 +727,141 @@ function initBlockly() {
     Blockly.inject(document.getElementById('blocklyDiv'), {path: 'blockly-read-only-trunk/', toolbox: toolbox, scrollbars: false, trashcan: false});
     window.blocklyLoaded(Blockly);
 }
+
+
+
+
+Blockly.Blocks['robText_join'] = {
+    /**
+     * Block for creating a string made up of any number of elements of any
+     * type.
+     * 
+     * @this Blockly.Block
+     */
+    init : function() {
+        this.setHelpUrl(Blockly.Msg.TEXT_JOIN_HELPURL);
+        this.setColour(160);
+        this.appendValueInput('ADD0').appendField(Blockly.Msg.TEXT_JOIN_TITLE_CREATEWITH);
+        this.appendValueInput('ADD1');
+        this.setOutput(true, 'String');
+        this.setMutatorPlus(new Blockly.MutatorPlus(this));
+        this.setTooltip(Blockly.Msg.TEXT_JOIN_TOOLTIP);
+        this.itemCount_ = 2;
+    },
+    /**
+     * Create XML to represent number of text inputs.
+     * 
+     * @return {Element} XML storage element.
+     * @this Blockly.Block
+     */
+    mutationToDom : function() {
+        var container = document.createElement('mutation');
+        container.setAttribute('items', this.itemCount_);
+        return container;
+    },
+    /**
+     * Parse XML to restore the text inputs.
+     * 
+     * @param {!Element}
+     *            xmlElement XML storage element.
+     * @this Blockly.Block
+     */
+    domToMutation : function(xmlElement) {
+        this.itemCount_ = parseInt(xmlElement.getAttribute('items'), 10);
+        for (var x = 2; x < this.itemCount_; x++) {
+            var input = this.appendValueInput('ADD' + x);
+            if (x == 2) {
+                this.setMutatorMinus(new Blockly.MutatorMinus(this));
+                this.render();
+            }
+        }
+    },
+    /**
+     * Update the shape according to the number of item inputs.
+     * 
+     * @param {Number}
+     *            number of item inputs.
+     * @this Blockly.Block
+     */
+    updateShape_ : function(num) {
+        if (num == 1) {
+            if (this.itemCount_ == 2) {
+                this.setMutatorMinus(new Blockly.MutatorMinus(this));
+                this.render();
+            }
+            this.appendValueInput('ADD' + this.itemCount_);
+            this.itemCount_++;
+        } else if (num == -1) {
+            this.itemCount_--;
+            this.removeInput('ADD' + this.itemCount_);
+        }
+        if (this.itemCount_ == 2) {
+            this.mutatorMinus.dispose();
+            this.mutatorMinus = null;
+            this.render();
+        }
+    }
+};
+
+
+Blockly.Drools['robText_join'] = function(block) {
+  // Create a string made up of any number of elements of any type.
+  var code;
+  if (block.itemCount_ == 0) {
+    return ['\'\'', Blockly.Drools.ORDER_ATOMIC];
+  } else if (block.itemCount_ == 1) {
+    var argument0 = Blockly.Drools.valueToCode(block, 'ADD0',
+        Blockly.Drools.ORDER_NONE) || '\'\'';
+    code =  argument0;
+    return [code, Blockly.Drools.ORDER_FUNCTION_CALL];
+  } else if (block.itemCount_ == 2) {
+    var argument0 = Blockly.Drools.valueToCode(block, 'ADD0',
+        Blockly.Drools.ORDER_NONE) || '\'\'';
+    var argument1 = Blockly.Drools.valueToCode(block, 'ADD1',
+        Blockly.Drools.ORDER_NONE) || '\'\'';
+    code = argument0 + '+' + argument1;
+    return [code, Blockly.Drools.ORDER_ADDITION];
+  } else {
+    code = '""';
+    for (var n = 0; n < block.itemCount_; n++) {
+      code += '+' + Blockly.Drools.valueToCode(block, 'ADD' + n,
+          Blockly.Drools.ORDER_COMMA) || '\'\'';
+    }
+    return [code, Blockly.Drools.ORDER_FUNCTION_CALL];
+  }
+};
+
+
+Blockly.Blocks['math_percentage'] = {
+  /**
+   * Block for numeric value.
+   * @this Blockly.Block
+   */
+  init: function() {
+    this.setHelpUrl(Blockly.Msg.MATH_NUMBER_HELPURL);
+    this.setColour(Blockly.Blocks.math.HUE);
+    this.appendValueInput()
+        .appendField(new Blockly.FieldTextInput('70', Blockly.FieldTextInput.numberValidator), 'NUM')
+        .appendField('% of ');
+    this.setOutput(true, 'Number');
+    this.setTooltip(Blockly.Msg.MATH_NUMBER_TOOLTIP);
+  }
+};
+
+Blockly.Drools['math_percentage'] = function(block) {
+    // todo
+    var code = '';
+    return code;
+};
+
+
+Blockly.Drools['hipchat_message'] = function(block) { return ''; }
+Blockly.Drools['campfire_message'] = function(block) { return ''; }
+Blockly.Drools['campfire_sound_message'] = function(block) { return ''; }
+Blockly.Drools['sqwiggle_message'] = function(block) { return ''; }
+Blockly.Drools['flowdock_message'] = function(block) { return ''; }
+Blockly.Drools['hall_message'] = function(block) { return ''; }
+
+
+
+
