@@ -5,6 +5,10 @@ function clearAllBlocks() {
 }
 
 function save() {
+
+    document.getElementById("saveFail").style.display = 'none';
+    document.getElementById("saveDone").style.display = 'none';
+
     var uri = getSaveUri();
     var drl = Blockly.Drools.workspaceToCode();
     console.log(drl);
@@ -34,11 +38,13 @@ function save() {
       contentType: 'text/plain',
       data: drl
   }) .done(function( data, textStatus, jqXHR ) {
-      window.location = '#close';
-      alert('done: '+textStatus);
+      console.log(textStatus);
+      document.getElementById("saveDone").style.display = 'block';
+      document.getElementById("saveFail").style.display = 'none';
   }) .fail(function( jqXHR, textStatus, errorThrown ) {
-      window.location = '#close';
-      alert('fail: '+textStatus);
+      console.log(textStatus);
+      document.getElementById("saveFail").style.display = 'block';
+      document.getElementById("saveDone").style.display = 'none';
   });
 }
 
@@ -232,72 +238,26 @@ function disableNonRuleAttachedBlocks() {
 }
 
 
-function DataBinder( object_id ) {
-  // Use a jQuery object as simple PubSub
-  var pubSub = jQuery({});
-
-  // We expect a `data` element specifying the binding
-  // in the form: data-bind-<object_id>="<property_name>"
-  var data_attr = "bind-" + object_id,
-      message = object_id + ":change";
-
-  // Listen to change events on elements with the data-binding attribute and proxy
-  // them to the PubSub, so that the change is "broadcasted" to all connected objects
-  jQuery( document ).on( "change", "[data-" + data_attr + "]", function( evt ) {
-    var $input = jQuery( this );
-
-    pubSub.trigger( message, [ $input.data( data_attr ), $input.val() ] );
-  });
-
-  // PubSub propagates changes to all bound elements, setting value of
-  // input tags or HTML content of other tags
-  pubSub.on( message, function( evt, prop_name, new_val ) {
-    jQuery( "[data-" + data_attr + "=" + prop_name + "]" ).each( function() {
-      var $bound = jQuery( this );
-
-      if ( $bound.is("input, textarea, select") ) {
-        $bound.val( new_val );
-      } else {
-        $bound.html( new_val );
-      }
-    });
-  });
-
-  return pubSub;
-}
-
-
 function SaveSettings( uid ) {
-  var binder = new DataBinder( uid ),
-
-      saveSettings = {
+  var  saveSettingsObj = {
         attributes: {},
 
         // The attribute setter publish changes using the DataBinder PubSub
         set: function( attr_name, val ) {
           this.attributes[ attr_name ] = val;
-          binder.trigger( uid + ":change", [ attr_name, val, this ] );
+          console.log(attr_name + ' set to '+ val);
         },
 
         get: function( attr_name ) {
           return this.attributes[ attr_name ];
-        },
-
-        _binder: binder
+        }
       };
 
-  // Subscribe to the PubSub
-  binder.on( uid + ":change", function( evt, attr_name, new_val, initiator ) {
-    if ( initiator !== saveSettings ) {
-      saveSettings.set( attr_name, new_val );
-    }
-  });
-
-  return saveSettings;
+  return saveSettingsObj;
 }
 
 // javascript
-var saveSettings = new SaveSettings( 12345 );
+var saveSettingsObj = new SaveSettings( 12345 );
 
 function initFromQueryParams() {
 
@@ -309,15 +269,29 @@ function initFromQueryParams() {
     turnTutorialOff();
   }
 
-  saveSettings.set( "moduleId", getParameterByName('moduleId') );
-  saveSettings.set( "version", getParameterByName('version') );
-  saveSettings.set( "saveUrl", "http://stackbot.elasticbeanstalk.com/whenthen/modules/{moduleId}/{version}/source" );
+  saveSettingsObj.set( "moduleId", getParameterByName('moduleId') );
+  saveSettingsObj.set( "version", getParameterByName('version') );
+  saveSettingsObj.set( "saveUrl", "http://stackbot.elasticbeanstalk.com/whenthen/modules/{moduleId}/{version}/source" );
+
+  initSettingsForm();
+}
+
+function initSettingsForm() {
+  document.getElementById("moduleIdEntry").value = saveSettingsObj.get('moduleId');
+  document.getElementById("saveVersionEntry").value = saveSettingsObj.get('version');
+  document.getElementById("saveUrlEntry").value = saveSettingsObj.get('saveUrl');
+}
+
+function saveSettings() {
+  saveSettingsObj.set('moduleId', document.getElementById("moduleIdEntry").value);
+  saveSettingsObj.set('version', document.getElementById("saveVersionEntry").value);
+  saveSettingsObj.set('saveUrl', document.getElementById("saveUrlEntry").value);
 }
 
 function getSaveUri() {
-  var value = saveSettings.get('saveUrl');
-  value = value.replace("{moduleId}", saveSettings.get('moduleId'));
-  value = value.replace("{version}", saveSettings.get('version'));
+  var value = saveSettingsObj.get('saveUrl');
+  value = value.replace("{moduleId}", saveSettingsObj.get('moduleId'));
+  value = value.replace("{version}", saveSettingsObj.get('version'));
   return value;
 }
 

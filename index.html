@@ -10,7 +10,7 @@
   
 
   <!-- Blockly core -->
-	<script src="../blockly/blockly_uncompressed.js"></script>
+	<script src="../blockly/blockly_compressed.js"></script>
 	<script src="../blockly/blocks_compressed.js"></script>
 	<script src="../blockly/msg/js/en.js"></script>
 
@@ -51,7 +51,7 @@
     <li><a href="#saveDialog" onclick="save()"><i class="fa fa-save fa-2x"></i><Br/>Save</a></li>
     <li><a href="#helpDialog"><i class="fa fa-question-circle fa-2x"></i><Br/>Help</a></li>
     <li><a href="#clearDialog"><i class="fa fa-trash fa-2x"></i><Br/>Clear</a></li>
-    <li><a href="#settingsDialog"><i class="fa fa-cog fa-2x"></i><Br/>Settings</a></li>
+    <li><a href="#settingsDialog" onclick="initSettingsForm()"><i class="fa fa-cog fa-2x"></i><Br/>Settings</a></li>
     <li><a href="#" onclick="toggleTutorial(this)"><i id="toggleTutorialIcon" class="fa fa-toggle-on fa-2x"></i><Br/>Tutorial</a></li>
   </ul>
 </nav>
@@ -136,7 +136,18 @@
   <div>
     <a href="#close" title="Close" class="close">X</a>
     <h2>Saving...</h2>
-    <p>Your application is being saved and deployed</p>
+    <p>Your application is being saved and deployed. Please wait...</p>
+    <div id="saveDone" style="display:none;">
+      <p><h3>Application saved</h3>
+        <a class="nectar-button medium extra-color-1" href="#close" data-color-override="false"><span>OK</span> </a>
+      </p>
+    </div>
+    <div id="saveFail" style="display:none;">
+      <p><h3>Failed to save</h3>
+        An error occurred saving your application.
+        <a class="nectar-button medium extra-color-1" href="#close" data-color-override="false"><span>Close</span> </a>
+      </p>
+    </div>
   </div>
 </div>
 
@@ -149,17 +160,17 @@
         <fieldset>
             <div class="pure-control-group">
                 <label for="moduleIdEntry">ModuleId</label>
-                <input id="moduleIdEntry" type="text" data-bind-12345="moduleId">
+                <input id="moduleIdEntry" type="text">
             </div>
 
             <div class="pure-control-group">
                 <label for="saveVersionEntry">Version</label>
-                <input id="moduleIdEntry" type="text" data-bind-12345="version">
+                <input id="saveVersionEntry" type="text">
             </div>
 
             <div class="pure-control-group">
                 <label for="saveUrlEntry">Save URL</label>
-                <input id="saveUrlEntry" type="text" data-bind-12345="saveUrl">
+                <input id="saveUrlEntry" type="text">
             </div>
 
 

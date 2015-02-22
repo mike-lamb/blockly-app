@@ -840,7 +840,7 @@ Blockly.Blocks['math_percentage'] = {
   init: function() {
     this.setHelpUrl(Blockly.Msg.MATH_NUMBER_HELPURL);
     this.setColour(Blockly.Blocks.math.HUE);
-    this.appendValueInput()
+    this.appendValueInput('VALUE')
         .appendField(new Blockly.FieldTextInput('70', Blockly.FieldTextInput.numberValidator), 'NUM')
         .appendField('% of ');
     this.setOutput(true, 'Number');
@@ -849,9 +849,11 @@ Blockly.Blocks['math_percentage'] = {
 };
 
 Blockly.Drools['math_percentage'] = function(block) {
-    // todo
-    var code = '';
-    return code;
+    var argument = Blockly.Drools.valueToCode(block, 'VALUE',
+            Blockly.Drools.ORDER_MULTIPLICATION) || '0';
+
+    var code = '((' + parseFloat(block.getFieldValue('NUM')) + ' / 100.0 ) * ' + argument + ')';
+    return [code, Blockly.Drools.ORDER_FUNCTION_CALL];
 };
 
 
