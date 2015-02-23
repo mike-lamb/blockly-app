@@ -207,7 +207,6 @@ Blockly.Blocks['variables_get'] = {
   inputBlock: undefined,
   fieldValue: undefined,
   getFieldValue: function(name) {
-      console.log('myGetFieldValue');
       if (name != 'VAR') {
           return '';
       }
@@ -224,7 +223,6 @@ Blockly.Blocks['variables_get'] = {
   setFieldValue: function(newValue, name) {
       
       if (name != 'VAR') {
-          console.log('setFieldValue('+newValue+","+name+')');
           return;
       }
       
@@ -232,7 +230,6 @@ Blockly.Blocks['variables_get'] = {
         this.objValue = newValue;
         this.refresh();
       } else {
-          console.log('simple string value='+newValue);
           this.nothing.createstacktrace;
           var field = this.getField_(name);
           goog.asserts.assertObject(field, 'Field "%s" not found.', name);
@@ -241,8 +238,6 @@ Blockly.Blocks['variables_get'] = {
   },
   init: function() {
     var name = 'unknown';
-    console.log('init');
-    console.log(this);
     
     this.inputBlock = this.appendDummyInput();
     this.inputBlock
@@ -251,7 +246,6 @@ Blockly.Blocks['variables_get'] = {
     
            //   .appendField(dropdown, "PROP.");
     
-    console.log("ObjValue:"+this.objValue);
     if (this.objValue) {
         refresh();
     } else {
@@ -322,7 +316,6 @@ Blockly.Blocks['variables_get'] = {
             var dotPos = item.indexOf('.', pathWithDotLen);
             if (item.indexOf(pathWithDot) == 0 && dotPos == -1) {
                 var disp = item.substring(pathLen);
-                console.log(disp);
                 var selector = disp.indexOf('[');
                 if (selector != -1) {
                     disp = disp.substring(0, selector);
@@ -520,8 +513,6 @@ Blockly.Connection.prototype.highlight = function() {
   var xy = this.sourceBlock_.getRelativeToSurfaceXY();
   var x = this.x_ - xy.x;
   var y = this.y_ - xy.y
-  console.log('type=');
-  console.log(this);
   if (this.type == 1) {   // WT hack - not sure what '1' is - apart from it comes from debug
     y = y + 8;
   }

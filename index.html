@@ -201,26 +201,105 @@
   <div class="message">Drag the Rule/When/Then block<br> on to the workspace.</div>
 </div>
 
-<div class="desktop-tooltip tutorial-3" style="left: 226px; top: 240px; display:none;">
+<div class="desktop-tooltip tutorial-3" style="left: -1000px; top: -1000px; display:none;">
+  <button type="button" class="close-tooltip" onclick="dismissTooltip(this);"></button>
+  <div class="message">Select the 'Enter Rule Name' text <br> to give this rule the name 'Scale DynamoDB'.</div>
+</div>
+
+<div class="desktop-tooltip tutorial-4" style="left: 226px; top: 240px; display:none;">
   <button type="button" class="close-tooltip" onclick="dismissTooltip(this);"></button>
   <div class="message">Next select the 'DynamoDB' category<br> to show the scaling blocks.</div>
 </div>
 
-<div class="desktop-tooltip tutorial-4" style="left: 656px; top: 83px; display:none;">
+<div class="desktop-tooltip tutorial-5" style="left: 656px; top: 83px; display:none;">
   <button type="button" class="close-tooltip" onclick="dismissTooltip(this);"></button>
   <div class="message">Drag the 'Consumed read are greater than' <br> block and connect it to the <br> 'When' condition on the workspace.</div>
 </div>
 
-<div class="desktop-tooltip tutorial-5" style="left: 226px; top: 310px; display:none;">
+<div class="desktop-tooltip tutorial-6" style="left: 226px; top: 310px; display:none;">
   <button type="button" class="close-tooltip" onclick="dismissTooltip(this);"></button>
   <div class="message">Open the 'Math' category<br> to show the math functions.</div>
 </div>
 
-<div class="desktop-tooltip tutorial-6" style="left: 606px; top: 238px; display:none;">
+<div class="desktop-tooltip tutorial-7" style="left: 399px; top: 232px; display:none;">
   <button type="button" class="close-tooltip" onclick="dismissTooltip(this);"></button>
-  <div class="message">Select a '% of provisioned' threshold block <br> and connect it to the 'Capacity' <br> block you added to the workspace <br> in the previous step.</div>
+  <div class="message">Drag the '% of' block and connect it <br> to the 'Consumed reads' block <br> you added in the previous step.</div>
 </div>
 
+<div class="desktop-tooltip tutorial-8" style="left: 226px; top: 520px; display:none;">
+  <button type="button" class="close-tooltip" onclick="dismissTooltip(this);"></button>
+  <div class="message">Open the 'Variables' category<br> to show the currently available variables.</div>
+</div>
+
+<div class="desktop-tooltip tutorial-9" style="left: 399px; top: 142px; display:none;">
+  <button type="button" class="close-tooltip" onclick="dismissTooltip(this);"></button>
+  <div class="message">Drag the 'provisioned' block <br> and connect it to the '% of' <br> block you added in the previous step.</div>
+</div>
+
+<div class="desktop-tooltip tutorial-10" style="left: 226px; top: 240px; display:none;">
+  <button type="button" class="close-tooltip" onclick="dismissTooltip(this);"></button>
+  <div class="message">Open the 'DynamoDB' <br> category again.</div>
+</div>
+
+<div class="desktop-tooltip tutorial-11" style="left: 526px; top: 150px; display:none;">
+  <button type="button" class="close-tooltip" onclick="dismissTooltip(this);"></button>
+  <div class="message">Drag the 'Set provisioned reads' <br> block and connect it to the <br> 'Then' condition on the workspace.</div>
+</div>
+
+<div class="desktop-tooltip tutorial-12" style="left: 226px; top: 310px; display:none;">
+  <button type="button" class="close-tooltip" onclick="dismissTooltip(this);"></button>
+  <div class="message">Open the 'Math' <br> category again.</div>
+</div>
+
+<div class="desktop-tooltip tutorial-13" style="left: 399px; top: 232px; display:none;">
+  <button type="button" class="close-tooltip" onclick="dismissTooltip(this);"></button>
+  <div class="message">Drag the '% of' block and connect it <br> to the 'Set provisioned reads' block <br> you added in the previous step.</div>
+</div>
+
+<div class="desktop-tooltip tutorial-14" style="left: 226px; top: 510px; display:none;">
+  <button type="button" class="close-tooltip" onclick="dismissTooltip(this);"></button>
+  <div class="message">Edit the percentage <br> value to 120</div>
+</div>
+
+<div class="desktop-tooltip tutorial-15" style="left: 226px; top: 510px; display:none;">
+  <button type="button" class="close-tooltip" onclick="dismissTooltip(this);"></button>
+  <div class="message">Open the 'Variables' <br> category again.</div>
+</div>
+
+<div class="desktop-tooltip tutorial-16" style="left: 399px; top: 142px; display:none;">
+  <button type="button" class="close-tooltip" onclick="dismissTooltip(this);"></button>
+  <div class="message">Drag the 'provisioned' block <br> and connect it to the '% of' <br> block you added in the previous step.</div>
+</div>
+
+<div class="desktop-tooltip tutorial-17" style="left: 226px; top: 440px; display:none;">
+  <button type="button" class="close-tooltip" onclick="dismissTooltip(this);"></button>
+  <div class="message">Open the 'Notifications' category <br> to show the available <br> notification services.</div>
+</div>
+
+<div class="desktop-tooltip tutorial-18" style="left: 516px; top: 104px; display:none;">
+  <button type="button" class="close-tooltip" onclick="dismissTooltip(this);"></button>
+  <div class="message">Drag the 'slack' notification <br> and connect it below the <br> 'Set provisioned reads' block on the workspace.</div>
+</div>
+
+<div class="desktop-tooltip tutorial-19" style="left: 226px; top: 380px; display:none;">
+  <button type="button" class="close-tooltip" onclick="dismissTooltip(this);"></button>
+  <div class="message">Next, open the <br> 'Text' category.</div>
+</div>
+
+<div class="desktop-tooltip tutorial-20" style="left: 346px; top: 88px; display:none;">
+  <button type="button" class="close-tooltip" onclick="dismissTooltip(this);"></button>
+  <div class="message">Drag the empty text block <br> and connect it to the 'Message' <br> connector on the previously added block.</div>
+</div>
+
+<div class="desktop-tooltip tutorial-21" style="left: 346px; top: 88px; display:none;">
+  <button type="button" class="close-tooltip" onclick="dismissTooltip(this);"></button>
+  <div class="message">Edit the text to contain the <br> message you would like to <br> send to your slack channel.</div>
+</div>
+
+<div class="desktop-tooltip tutorial-22" style="left: 116px; top: 8px; display:none;">
+  <button type="button" class="close-tooltip" onclick="dismissTooltip(this);"></button>
+  <div class="message">Finally select 'Save' to  <br> save your application and <br> complete this tutorial.</div>
+</div>
 
 <script>
   Blockly.inject(document.getElementById('blocklyDiv'),
